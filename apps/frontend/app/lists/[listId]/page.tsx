@@ -86,12 +86,11 @@ const TaskPage = () => {
         {!!tasks.length ? (
           tasks.map((task: Task) => (
             <li key={task._id} className="list-item">
-              <p>{task.content}</p>
-              <p>Created by: {task.createdBy.username}</p>
+              <p>Content: {task.content}</p>
+              <p>Created: {task.createdBy.username}</p>
               <p>
-                {`Last updated ${new Date(
-                  task.updatedAt
-                ).toLocaleDateString()} by ${task.updatedBy.username}`}
+                Updated: {new Date(task.updatedAt).toLocaleDateString()}, &nbsp;
+                {task.updatedBy.username}
               </p>
 
               <button onClick={() => handleEditTask(task._id)}>Edit</button>

@@ -21,9 +21,11 @@ const Navbar = () => {
         <li>
           <Link href="/">Home</Link>
         </li>
-        <li>
-          <Link href="/lists">My Lists</Link>
-        </li>
+        {isAuthenticated && (
+          <li>
+            <Link href="/lists">My Lists</Link>
+          </li>
+        )}
       </ul>
 
       <ul className="auth-container">
