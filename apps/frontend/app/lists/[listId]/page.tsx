@@ -3,12 +3,13 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 
-import api from "@/components/utils/api";
-import { Task } from "@/components/utils/types";
+import Task from "@/components/task";
+import api from "@/utils/api";
+import { Task as TaskType } from "@/utils/types";
 
 const TaskPage = () => {
   const { listId } = useParams();
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<TaskType[]>([]);
   const [taskContent, setTaskContent] = useState<string>("");
   const [shareWith, setShareWith] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -58,10 +59,28 @@ const TaskPage = () => {
       });
       const updatedTask = response.data;
       setTasks(
-        tasks.map((task: Task) => (task._id === taskId ? updatedTask : task))
+        tasks.map((task: TaskType) =>
+          task._id === taskId ? updatedTask : task
+        )
       );
     } catch (error) {
       console.log("Failed to update task");
+    }
+  };
+
+  const handleCompleteTask = async (taskId: string, complete: boolean) => {
+    try {
+      const response = await api.put(`/tasks/${listId}/${taskId}/complete`, {
+        completed: complete,
+      });
+      const updatedTask = response.data;
+      setTasks(
+        tasks.map((task: TaskType) =>
+          task._id === taskId ? updatedTask : task
+        )
+      );
+    } catch (error) {
+      console.log(`Failed to ${complete ? "complete" : "reactivate"} task`);
     }
   };
 
@@ -79,28 +98,24 @@ const TaskPage = () => {
   };
 
   return (
-    <div>
+    <>
       <p>List owned by: {listOwner}</p>
 
-      <ul className="list-page">
-        {!!tasks.length ? (
-          tasks.map((task: Task) => (
-            <li key={task._id} className="list-item">
-              <p>Content: {task.content}</p>
-              <p>Created: {task.createdBy.username}</p>
-              <p>
-                Updated: {new Date(task.updatedAt).toLocaleDateString()}, &nbsp;
-                {task.updatedBy.username}
-              </p>
-
-              <button onClick={() => handleEditTask(task._id)}>Edit</button>
-              <button onClick={() => handleDeleteTask(task._id)}>Delete</button>
-            </li>
-          ))
-        ) : (
-          <p>There is no tasks yet...</p>
-        )}
-      </ul>
+      {!!tasks.length ? (
+        <ul className="list-grid">
+          {tasks.map((task: TaskType) => (
+            <Task
+              key={`task_${task._id}`}
+              task={task}
+              onEdit={handleEditTask}
+              onDelete={handleDeleteTask}
+              onComplete={handleCompleteTask}
+            />
+          ))}
+        </ul>
+      ) : (
+        <p>There is no tasks yet...</p>
+      )}
 
       <form onSubmit={handleAddTask}>
         <input
@@ -125,7 +140,7 @@ const TaskPage = () => {
         <button type="submit">Share List</button>
         {successMessage && <p>{successMessage}</p>}
       </form>
-    </div>
+    </>
   );
 };
 

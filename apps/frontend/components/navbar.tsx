@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { useAuth } from "../components/hooks/auth-provider";
+import { useAuth } from "../hooks/auth-provider";
 import navbar from "./navbar.module.css";
 
 const Navbar = () => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/components/hooks/auth-provider";
+import { useAuth } from "@/hooks/auth-provider";
 
 const HomePage = () => {
   const { isAuthenticated, username } = useAuth();

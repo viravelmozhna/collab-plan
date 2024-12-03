@@ -4,7 +4,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
-import { useAuth } from "@/components/hooks/auth-provider";
+import { useAuth } from "@/hooks/auth-provider";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
