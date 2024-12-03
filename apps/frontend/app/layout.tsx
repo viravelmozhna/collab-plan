@@ -1,6 +1,6 @@
 import "./globals.css";
 import Navbar from "@/components/navbar";
-import { AuthProvider } from "@/components/hooks/auth-provider";
+import { AuthProvider } from "@/hooks/auth-provider";
 
 export const metadata = {
   title: "Collaborative To-Do List",

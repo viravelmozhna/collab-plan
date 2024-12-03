@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-import api from "@/components/utils/api";
-import { List } from "@/components/utils/types";
-import listPage from "./listPage.module.css";
+import api from "@/utils/api";
+import { List } from "@/utils/types";
+import ItemCard from "@/components/itemCard";
+import itemCard from "@/components/itemCard.module.css";
 
 const ListsPage = () => {
   const [lists, setLists] = useState<List[]>([]);
@@ -45,20 +46,25 @@ const ListsPage = () => {
     <div>
       <h1>Your Lists</h1>
 
-      <ul className={listPage["list-page"]}>
-        {lists.map((list: List) => (
-          <li
-            key={list._id}
-            className={listPage["list-item"]}
-            onClick={() => handleClickOnItem(list._id)}
-          >
-            <p className={listPage["list-item-text"]}>
-              {list.name}
-              {list.isOwner ? " (Owned)" : " (Shared with you)"}
-            </p>
-          </li>
-        ))}
-      </ul>
+      {!!lists.length ? (
+        <ul className="list-grid">
+          {lists.map((list: List) => (
+            <ItemCard
+              key={`list_${list._id}`}
+              id={list._id}
+              classNames={itemCard["list-item"]}
+              onClick={handleClickOnItem}
+            >
+              <p>
+                {list.name}
+                {list.isOwner ? " (Owned)" : " (Shared with you)"}
+              </p>
+            </ItemCard>
+          ))}
+        </ul>
+      ) : (
+        <p>There is no lists yet...</p>
+      )}
 
       <form onSubmit={handleCreateList}>
         <input
