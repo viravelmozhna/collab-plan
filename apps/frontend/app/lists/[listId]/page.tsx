@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams } from "next/navigation";
 
 import Task from "@/components/task";
 import api from "@/utils/api";
 import { Task as TaskType } from "@/utils/types";
+import { SocketContext } from "@/context/socket-provider";
 
 const TaskPage = () => {
   const { listId } = useParams();
@@ -14,6 +15,8 @@ const TaskPage = () => {
   const [shareWith, setShareWith] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [listOwner, setListOwner] = useState("");
+
+  const socket = useContext(SocketContext);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -29,8 +32,43 @@ const TaskPage = () => {
     fetchTasks();
   }, [listId]);
 
+  useEffect(() => {
+    if (!socket) return; // Wait for the socket to initialize
+
+    socket.emit("joinRoom", listId);
+
+    socket.on("taskCreated", (newTask) => {
+      setTasks((prev) => [...prev, newTask]);
+    });
+
+    socket.on("taskDescriptionUpdated", (updatedTask) => {
+      setTasks((prev) =>
+        prev.map((task) => (task._id === updatedTask._id ? updatedTask : task))
+      );
+    });
+
+    socket.on("taskCompletionUpdated", (updatedTask) => {
+      setTasks((prev) =>
+        prev.map((task) => (task._id === updatedTask._id ? updatedTask : task))
+      );
+    });
+
+    socket.on("taskDeleted", (taskId) => {
+      setTasks((prev) => prev.filter((task) => task._id !== taskId));
+    });
+
+    return () => {
+      socket.emit("leaveRoom", listId);
+      socket.off("taskCreated");
+      socket.off("taskDescriptionUpdated");
+      socket.off("taskCompletionUpdated");
+      socket.off("taskDeleted");
+    };
+  }, [socket, listId]);
+
   const handleAddTask = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
       const response = await api.post(`/tasks/${listId}`, {
         content: taskContent,
