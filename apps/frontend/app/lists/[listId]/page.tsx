@@ -4,13 +4,13 @@ import { useState, useEffect, useContext } from "react";
 import { useParams } from "next/navigation";
 
 import Task from "@/components/task";
-import api from "@/utils/api";
-import { Task as TaskType } from "@/utils/types";
 import { SocketContext } from "@/context/socket-provider";
+import api from "@/utils/api";
+import { TaskItem } from "@/utils/types";
 
 const TaskPage = () => {
   const { listId } = useParams();
-  const [tasks, setTasks] = useState<TaskType[]>([]);
+  const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [taskContent, setTaskContent] = useState<string>("");
   const [shareWith, setShareWith] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -97,7 +97,7 @@ const TaskPage = () => {
       });
       const updatedTask = response.data;
       setTasks(
-        tasks.map((task: TaskType) =>
+        tasks.map((task: TaskItem) =>
           task._id === taskId ? updatedTask : task
         )
       );
@@ -113,7 +113,7 @@ const TaskPage = () => {
       });
       const updatedTask = response.data;
       setTasks(
-        tasks.map((task: TaskType) =>
+        tasks.map((task: TaskItem) =>
           task._id === taskId ? updatedTask : task
         )
       );
@@ -137,11 +137,9 @@ const TaskPage = () => {
 
   return (
     <>
-      <p>List owned by: {listOwner}</p>
-
       {!!tasks.length ? (
         <ul className="list-grid">
-          {tasks.map((task: TaskType) => (
+          {tasks.map((task: TaskItem) => (
             <Task
               key={`task_${task._id}`}
               task={task}
@@ -154,6 +152,8 @@ const TaskPage = () => {
       ) : (
         <p>There is no tasks yet...</p>
       )}
+
+      <p>List owned by: {listOwner}</p>
 
       <form onSubmit={handleAddTask}>
         <input
