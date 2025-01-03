@@ -2,11 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-
+import ItemCard from "@/components/itemCard";
 import api from "@/utils/api";
 import { List } from "@/utils/types";
-import ItemCard from "@/components/itemCard";
-import itemCard from "@/components/itemCard.module.css";
 
 const ListsPage = () => {
   const [lists, setLists] = useState<List[]>([]);
@@ -44,7 +42,7 @@ const ListsPage = () => {
 
   return (
     <div>
-      <h1>Your Lists</h1>
+      <h1>Your Projects</h1>
 
       {!!lists.length ? (
         <ul className="list-grid">
@@ -52,12 +50,14 @@ const ListsPage = () => {
             <ItemCard
               key={`list_${list._id}`}
               id={list._id}
-              classNames={itemCard["list-item"]}
+              classNames="item project-item"
               onClick={handleClickOnItem}
             >
               <p>
+                {!list.isOwner && (
+                  <span className="shared-project-badge">Shared with you</span>
+                )}
                 {list.name}
-                {list.isOwner ? " (Owned)" : " (Shared with you)"}
               </p>
             </ItemCard>
           ))}

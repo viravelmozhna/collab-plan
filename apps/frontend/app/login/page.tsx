@@ -22,7 +22,7 @@ const LoginPage = () => {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("username", username);
       setIsAuthenticated(true);
-      router.push("/");
+      router.push("/lists");
     } catch (error) {
       console.log("Invalid credentials");
     }

@@ -8,7 +8,7 @@ body {
 
 body {
   font-family: Arial, sans-serif;
-  background-color: #f7f7f7;
+  background-color: #f5f5f5;
 }
 
 .container {
@@ -18,44 +18,116 @@ body {
   height: 100vh;
 }
 
+/* Navigation */
 nav.nav-container {
   display: flex;
   flex-direction: column;
-
-  width: 20vw;
-  padding: 20px 0 20px 20px;
-
-  background-color: #333;
+  min-width: 12vw;
+  padding: 20px;
+  background-color: #15539b;
   color: white;
 }
-
 nav ul {
   display: flex;
   flex-direction: column;
-
-  list-style-type: none;
   margin: 0;
   padding: 0;
-  gap: 1rem;
-}
+  gap: 12px;
+  list-style-type: none;
 
-nav ul.auth-container {
-  margin-top: auto;
+  &.auth-container {
+    margin-top: auto;
+  }
 }
-
 nav ul li a {
   color: white;
   text-decoration: none;
 }
+.logout-btn {
+  cursor: pointer;
+}
+/* Navigation */
+
+/* Grid */
+.list-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-width: 100%;
+  padding-left: 0;
+  gap: 12px;
+}
+/* Grid */
+
+/* ItemCard */
+.item {
+  padding: 12px;
+  list-style: none;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.project-item {
+  position: relative;
+  width: 15%;
+  padding-left: 68px;
+  cursor: pointer;
+}
+.task-item {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+  cursor: default;
+}
+.shared-project-badge {
+  position: absolute;
+  top: 0;
+  left: -8px;
+  rotate: -10deg;
+  width: 60px;
+  padding: 4px 8px;
+  background-color: #f1cc78;
+  color: white;
+  border-radius: 8px;
+  font-size: 12px;
+  text-align: center;
+}
+.completed-task {
+  background-color: #15549b06;
+
+  .content {
+    color: gray;
+    text-decoration: line-through;
+  }
+}
+.action-icons {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: end;
+  gap: 4px;
+
+  & div {
+    cursor: pointer;
+    color: gray;
+
+    &:hover {
+      color: #333;
+    }
+  }
+}
+.content {
+  margin-bottom: 4px;
+  font-size: 18px;
+}
+.details {
+  color: gray;
+  font-size: 12px;
+}
+/* ItemCard */
 
 main {
   flex-grow: 1;
   padding: 20px;
   overflow-y: scroll;
-}
-
-h1 {
-  text-align: center;
 }
 
 form {
@@ -79,7 +151,7 @@ input {
 button {
   width: 100%;
   padding: 0.5rem;
-  background-color: #0070f3;
+  background-color: #15539b;
   color: white;
   border: none;
   border-radius: 4px;
@@ -88,11 +160,4 @@ button {
 
 button:hover {
   background-color: #005bb5;
-}
-
-.list-grid {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  max-width: 100%;
 }

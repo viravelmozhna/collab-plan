@@ -3,7 +3,7 @@ export type User = {
   username: string;
 };
 
-export type Task = {
+export type TaskItem = {
   _id: string;
   content: string;
   completed: boolean;
@@ -19,6 +19,6 @@ export type List = {
   name: string;
   owner: string;
   sharedWith: User[];
-  tasks: Task[];
+  tasks: TaskItem[];
   isOwner: boolean;
 };
