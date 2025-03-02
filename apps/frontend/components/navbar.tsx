@@ -1,10 +1,9 @@
 "use client";
-
 import Link from "next/link";
 import { useAuth } from "../context/auth-provider";
 
 const Navbar = () => {
-  const { isAuthenticated, setIsAuthenticated, username } = useAuth();
+  const { isAuthenticated, setIsAuthenticated } = useAuth();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -14,21 +13,21 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="nav-container">
-      {isAuthenticated && (
-        <ul>
-          <li>
-            <p>Hello, {username}!</p>
-            <span>- - - - - - - - -</span>
-          </li>
-          <li>
-            <Link href="/lists">Your projects</Link>
-          </li>
-        </ul>
-      )}
-
-      <ul className="auth-container">
-        {!isAuthenticated ? (
+    <nav className="min-w-176 p-20 bg-bluish text-white">
+      <ul className="flex flex-col gap-8 list-none">
+        {isAuthenticated ? (
+          <>
+            <li>
+              <Link href="/lists">Your projects</Link>
+            </li>
+            <li>
+              <span>- - - - - - - - -</span>
+            </li>
+            <li className="cursor-pointer" onClick={handleLogout}>
+              Logout
+            </li>
+          </>
+        ) : (
           <>
             <li>
               <Link href="/login">Login</Link>
@@ -37,12 +36,6 @@ const Navbar = () => {
               <Link href="/signup">Signup</Link>
             </li>
           </>
-        ) : (
-          <li>
-            <div className="logout-btn" onClick={handleLogout}>
-              Logout
-            </div>
-          </li>
         )}
       </ul>
     </nav>

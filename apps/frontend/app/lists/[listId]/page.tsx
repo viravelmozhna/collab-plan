@@ -1,22 +1,21 @@
 "use client";
-
 import { useState, useEffect, useContext } from "react";
 import { useParams } from "next/navigation";
-
 import Task from "@/components/task";
 import { SocketContext } from "@/context/socket-provider";
 import api from "@/utils/api";
 import { TaskItem } from "@/utils/types";
+import { NotificationContext } from "@/context/notification-context";
 
 const TaskPage = () => {
   const { listId } = useParams();
   const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [taskContent, setTaskContent] = useState<string>("");
   const [shareWith, setShareWith] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [listOwner, setListOwner] = useState("");
 
   const socket = useContext(SocketContext);
+  const notification = useContext(NotificationContext);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -25,7 +24,11 @@ const TaskPage = () => {
         setTasks(response.data.tasks);
         setListOwner(response.data.owner.username);
       } catch (error) {
-        console.log("Failed to fetch the list or you do not have access");
+        notification?.updateNotification(
+          "Failed to fetch the tasks or you do not have access",
+          "error"
+        );
+        console.log(error);
       }
     };
 
@@ -75,8 +78,10 @@ const TaskPage = () => {
       });
       setTasks([...tasks, response.data]);
       setTaskContent("");
+      notification?.updateNotification("Task added successfully!", "success");
     } catch (error) {
-      console.log("Failed to add task");
+      notification?.updateNotification("Failed to add task", "error");
+      console.log(error);
     }
   };
 
@@ -84,8 +89,10 @@ const TaskPage = () => {
     try {
       await api.delete(`/tasks/${listId}/${taskId}`);
       setTasks(tasks.filter((task: any) => task._id !== taskId));
+      notification?.updateNotification("Task deleted successfully!", "success");
     } catch (error) {
-      console.log("Failed to delete task");
+      notification?.updateNotification("Failed to delete task", "error");
+      console.log(error);
     }
   };
 
@@ -101,8 +108,10 @@ const TaskPage = () => {
           task._id === taskId ? updatedTask : task
         )
       );
+      notification?.updateNotification("Task updated successfully!", "success");
     } catch (error) {
-      console.log("Failed to update task");
+      notification?.updateNotification("Failed to update task", "error");
+      console.log(error);
     }
   };
 
@@ -117,8 +126,16 @@ const TaskPage = () => {
           task._id === taskId ? updatedTask : task
         )
       );
+      notification?.updateNotification(
+        `Task ${complete ? "completed" : "reactivated"} successfully!`,
+        "success"
+      );
     } catch (error) {
-      console.log(`Failed to ${complete ? "complete" : "reactivate"} task`);
+      notification?.updateNotification(
+        `Failed to ${complete ? "complete" : "reactivate"} task`,
+        "error"
+      );
+      console.log(error);
     }
   };
 
@@ -128,17 +145,18 @@ const TaskPage = () => {
       await api.post(`/lists/${listId}/share`, {
         username: shareWith,
       });
-      setSuccessMessage("List shared successfully!");
       setShareWith("");
+      notification?.updateNotification("List shared successfully!", "success");
     } catch (error) {
-      console.log("Failed to share list");
+      notification?.updateNotification("Failed to share list", "error");
+      console.log(error);
     }
   };
 
   return (
     <>
       {!!tasks.length ? (
-        <ul className="list-grid">
+        <ul className="grid grid-cols-4 gap-12">
           {tasks.map((task: TaskItem) => (
             <Task
               key={`task_${task._id}`}
@@ -153,7 +171,7 @@ const TaskPage = () => {
         <p>There is no tasks yet...</p>
       )}
 
-      <p>List owned by: {listOwner}</p>
+      <p className="mt-12">List owned by: {listOwner}</p>
 
       <form onSubmit={handleAddTask}>
         <input
@@ -166,7 +184,6 @@ const TaskPage = () => {
         <button type="submit">Add Task</button>
       </form>
 
-      <h2>Share this List</h2>
       <form onSubmit={handleShareList}>
         <input
           type="text"
@@ -176,7 +193,6 @@ const TaskPage = () => {
           required
         />
         <button type="submit">Share List</button>
-        {successMessage && <p>{successMessage}</p>}
       </form>
     </>
   );
