@@ -38,7 +38,7 @@ const isTokenExpired = (token: string) => {
 };
 
 // AuthProvider component to provide authentication context to the app
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
 

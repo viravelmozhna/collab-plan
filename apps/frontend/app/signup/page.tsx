@@ -1,13 +1,15 @@
 "use client";
-
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { NotificationContext } from "@/context/notification-context";
 
 const SignupPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
   const router = useRouter();
+  const notification = useContext(NotificationContext);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,7 +20,8 @@ const SignupPage = () => {
       });
       router.push("/login");
     } catch (error) {
-      console.log("Registration failed");
+      notification?.updateNotification("Registration failed", "error");
+      console.log(error);
     }
   };
 

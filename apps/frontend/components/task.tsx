@@ -16,9 +16,11 @@ export default function Task({ task, onEdit, onDelete, onComplete }: Props) {
   return (
     <ItemCard
       id={task._id}
-      classNames={`item task-item ${task.completed && "completed-task"}`}
+      classNames={`flex flex-col p-12 cursor-default shadow-md ${
+        task.completed ? "bg-greyish" : "bg-white"
+      }`}
     >
-      <div className="action-icons">
+      <div className="action-icons flex gap-4">
         {task.completed ? (
           <div onClick={() => onComplete(task._id, false)}>
             <RepeatIcon size={18} />
@@ -38,9 +40,15 @@ export default function Task({ task, onEdit, onDelete, onComplete }: Props) {
         )}
       </div>
 
-      <div className="content">{task.content}</div>
+      <div
+        className={`mb-4 text-lg ${
+          task.completed ? "text-greyish-2 line-through" : ""
+        }`}
+      >
+        {task.content}
+      </div>
 
-      <div className="details">
+      <div className="text-greyish-2 text-xs">
         <span>Created: {task.createdBy.username}</span>
         <br />
         <span>{`${task.completed ? "Completed" : "Updated"}: ${

@@ -1,16 +1,17 @@
 "use client";
-
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-
 import { useAuth } from "@/context/auth-provider";
+import { NotificationContext } from "@/context/notification-context";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
   const { setIsAuthenticated } = useAuth();
   const router = useRouter();
+  const notification = useContext(NotificationContext);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +25,8 @@ const LoginPage = () => {
       setIsAuthenticated(true);
       router.push("/lists");
     } catch (error) {
-      console.log("Invalid credentials");
+      notification?.updateNotification("Invalid credentials", "error");
+      console.log(error);
     }
   };
 

@@ -1,24 +1,26 @@
 "use client";
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
 import ItemCard from "@/components/itemCard";
 import api from "@/utils/api";
 import { List } from "@/utils/types";
+import { NotificationContext } from "@/context/notification-context";
 
 const ListsPage = () => {
   const [lists, setLists] = useState<List[]>([]);
   const [listName, setListName] = useState<string>("");
 
   const router = useRouter();
+  const notification = useContext(NotificationContext);
 
   useEffect(() => {
     const fetchLists = async () => {
       try {
         const response = await api.get("/lists/");
         setLists(response.data);
-      } catch (error: any) {
-        console.log(error.message);
+      } catch (error) {
+        notification?.updateNotification("Failed to fetch projects", "error");
+        console.log(error);
       }
     };
     fetchLists();
@@ -35,30 +37,35 @@ const ListsPage = () => {
       response.data.isOwner = true;
       setLists([...lists, response.data]);
       setListName("");
+      notification?.updateNotification(
+        "Project created successfully",
+        "success"
+      );
     } catch (error) {
-      console.log("Failed to create list");
+      notification?.updateNotification("Failed to create a project", "error");
+      console.log(error);
     }
   };
 
   return (
-    <div>
-      <h1>Your Projects</h1>
-
+    <>
       {!!lists.length ? (
-        <ul className="list-grid">
+        <ul className="grid grid-cols-4 gap-12">
           {lists.map((list: List) => (
             <ItemCard
               key={`list_${list._id}`}
               id={list._id}
-              classNames="item project-item"
+              classNames="flex h-100 p-12 cursor-pointer bg-white shadow-md"
               onClick={handleClickOnItem}
             >
-              <p>
-                {!list.isOwner && (
-                  <span className="shared-project-badge">Shared with you</span>
-                )}
+              {!list.isOwner && (
+                <span className="w-60 h-40 p-4 mr-8 rounded-lg -rotate-12 bg-yellowish text-xs text-white text-center">
+                  Shared with you
+                </span>
+              )}
+              <span className="h-76 break-words text-ellipsis overflow-hidden multi-line-ellipsis">
                 {list.name}
-              </p>
+              </span>
             </ItemCard>
           ))}
         </ul>
@@ -76,7 +83,7 @@ const ListsPage = () => {
         />
         <button type="submit">Add new list</button>
       </form>
-    </div>
+    </>
   );
 };
 
