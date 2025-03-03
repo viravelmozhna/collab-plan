@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useAuth } from "../context/auth-provider";
 
 const Navbar = () => {
-  const { isAuthenticated, setIsAuthenticated } = useAuth();
+  const { isAuthenticated, setIsAuthenticated, username } = useAuth();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -17,6 +17,12 @@ const Navbar = () => {
       <ul className="flex flex-col gap-8 list-none">
         {isAuthenticated ? (
           <>
+            <li>
+              <p>{`Hello, ${username}`}</p>
+            </li>
+            <li>
+              <span>- - - - - - - - -</span>
+            </li>
             <li>
               <Link href="/lists">Your projects</Link>
             </li>
