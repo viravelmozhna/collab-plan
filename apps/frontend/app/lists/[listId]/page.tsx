@@ -6,6 +6,7 @@ import { SocketContext } from "@/context/socket-provider";
 import api from "@/utils/api";
 import { TaskItem } from "@/utils/types";
 import { NotificationContext } from "@/context/notification-context";
+import Loader from "@/components/loader";
 
 const TaskPage = () => {
   const { listId } = useParams();
@@ -13,6 +14,7 @@ const TaskPage = () => {
   const [taskContent, setTaskContent] = useState<string>("");
   const [shareWith, setShareWith] = useState("");
   const [listOwner, setListOwner] = useState("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const socket = useContext(SocketContext);
   const notification = useContext(NotificationContext);
@@ -20,6 +22,7 @@ const TaskPage = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
+        setIsLoading(true);
         const response = await api.get(`/tasks/${listId}`);
         setTasks(response.data.tasks);
         setListOwner(response.data.owner.username);
@@ -29,6 +32,8 @@ const TaskPage = () => {
           "error"
         );
         console.log(error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -155,7 +160,9 @@ const TaskPage = () => {
 
   return (
     <>
-      {!!tasks.length ? (
+      {isLoading ? (
+        <Loader />
+      ) : (
         <ul className="grid grid-cols-4 gap-12">
           {tasks.map((task: TaskItem) => (
             <Task
@@ -167,11 +174,13 @@ const TaskPage = () => {
             />
           ))}
         </ul>
-      ) : (
-        <p>There is no tasks yet...</p>
       )}
 
-      <p className="mt-12">List owned by: {listOwner}</p>
+      {!tasks.length && !isLoading && <p>There is no tasks yet...</p>}
+
+      {!!tasks.length && !isLoading && (
+        <p className="mt-12">List owned by: {listOwner}</p>
+      )}
 
       <form onSubmit={handleAddTask}>
         <input

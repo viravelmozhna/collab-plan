@@ -2,6 +2,7 @@
 import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
 import ItemCard from "@/components/itemCard";
+import Loader from "@/components/loader";
 import api from "@/utils/api";
 import { List } from "@/utils/types";
 import { NotificationContext } from "@/context/notification-context";
@@ -9,6 +10,7 @@ import { NotificationContext } from "@/context/notification-context";
 const ListsPage = () => {
   const [lists, setLists] = useState<List[]>([]);
   const [listName, setListName] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const router = useRouter();
   const notification = useContext(NotificationContext);
@@ -16,11 +18,14 @@ const ListsPage = () => {
   useEffect(() => {
     const fetchLists = async () => {
       try {
+        setIsLoading(true);
         const response = await api.get("/lists/");
         setLists(response.data);
       } catch (error) {
         notification?.updateNotification("Failed to fetch projects", "error");
         console.log(error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchLists();
@@ -33,6 +38,7 @@ const ListsPage = () => {
   const handleCreateList = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const response = await api.post("/lists/", { name: listName });
       response.data.isOwner = true;
       setLists([...lists, response.data]);
@@ -44,12 +50,16 @@ const ListsPage = () => {
     } catch (error) {
       notification?.updateNotification("Failed to create a project", "error");
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <>
-      {!!lists.length ? (
+      {isLoading ? (
+        <Loader />
+      ) : (
         <ul className="grid grid-cols-4 gap-12">
           {lists.map((list: List) => (
             <ItemCard
@@ -69,19 +79,19 @@ const ListsPage = () => {
             </ItemCard>
           ))}
         </ul>
-      ) : (
-        <p>There is no lists yet...</p>
       )}
+
+      {!lists.length && !isLoading && <p>There is no lists yet...</p>}
 
       <form onSubmit={handleCreateList}>
         <input
           type="text"
           value={listName}
           onChange={(e) => setListName(e.target.value)}
-          placeholder="New list name"
+          placeholder="New project name"
           required
         />
-        <button type="submit">Add new list</button>
+        <button type="submit">Add new project</button>
       </form>
     </>
   );

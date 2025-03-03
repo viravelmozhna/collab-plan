@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 📝 Plan Together - Collaborative To-Do List
 
-## Getting Started
+🚀 **Plan Together** is a **real-time collaborative task management app** that allows users to create task lists, share them with others, and track updates in **real-time** using **Socket.IO**.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 📌 Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- ✅ **User Authentication** (Sign up, Login, Logout) with JWT
+- ✅ **Create and Manage To-Do Lists**
+- ✅ **Share Lists** with Other Users
+- ✅ **Real-Time Updates** with **Socket.IO**
+- ✅ **Task Editing, Completion, and Deletion**
+- ✅ **Role Indication** (Owner vs. Shared User)
+- ✅ **Notifications** for Task Changes
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## 🛠️ Tech Stack
 
-## Learn More
+- **Frontend:** Next.js, TypeScript, Tailwind CSS, Axios
+- **Backend:** Node.js, Express.js, MongoDB, Mongoose, Socket.IO
+- **Authentication:** JWT (JSON Web Tokens)
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🚀 Usage Guide
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+🔹 1. **Register & Login**
+Create an account using username & password.
+🔹 2. **Create & Share Lists**
+Add new projects and share them with other registered users by username.
+🔹 3. **Add, Edit, and Delete Tasks**
+Assign tasks, mark them completed, and delete when necessary.
+🔹 4. **Real-Time Collaboration**
+Changes update instantly for all users sharing the list.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🛑 Disclaimer
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+This project, **Plan Together**, is a **learning exercise** designed to practice **real-time communication with Socket.IO** in a full-stack application.
+
+🔹 **Not all possible improvements and best practices** (such as advanced security, performance optimizations, and extensive error handling) were implemented, as they were **not a priority** for this learning-focused development.
+
+🔹 The application **is not optimized for mobile devices** and **does not include advanced UI styling or animations**. The focus was on building functional real-time features rather than aesthetics.
+
+🔹 While the core functionality works, this project is not production-ready and should not be used for real-world applications without further refinements.
+
+👩‍💻 Goal: Gain hands-on experience with **Next.js, Socket.IO, MongoDB, and real-time updates**.
