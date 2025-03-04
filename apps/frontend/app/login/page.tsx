@@ -1,9 +1,9 @@
 "use client";
 import { useState, useContext } from "react";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth-provider";
 import { NotificationContext } from "@/context/notification-context";
+import api from "@/utils/api";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -16,10 +16,7 @@ const LoginPage = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:3001/api/auth/login",
-        { username, password }
-      );
+      const response = await api.post("/auth/login", { username, password });
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("username", username);
       setIsAuthenticated(true);
@@ -32,7 +29,6 @@ const LoginPage = () => {
 
   return (
     <div>
-      <h1>Login</h1>
       <form onSubmit={handleLogin}>
         <input
           type="text"

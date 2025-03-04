@@ -9,7 +9,16 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:3001"); // Initialize socket connection
+    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL;
+
+    if (!socketUrl) {
+      console.warn(
+        "⚠️ NEXT_PUBLIC_SOCKET_URL is missing! Check your environment variables."
+      );
+      return;
+    }
+
+    const newSocket = io(socketUrl);
     setSocket(newSocket);
 
     return () => {

@@ -2,8 +2,6 @@
 
 🚀 **Plan Together** is a **real-time collaborative task management app** that allows users to create task lists, share them with others, and track updates in **real-time** using **Socket.IO**.
 
----
-
 ## 📌 Features
 
 - ✅ **User Authentication** (Sign up, Login, Logout) with JWT
@@ -14,28 +12,28 @@
 - ✅ **Role Indication** (Owner vs. Shared User)
 - ✅ **Notifications** for Task Changes
 
----
-
 ## 🛠️ Tech Stack
 
 - **Frontend:** Next.js, TypeScript, Tailwind CSS, Axios
 - **Backend:** Node.js, Express.js, MongoDB, Mongoose, Socket.IO
 - **Authentication:** JWT (JSON Web Tokens)
 
----
+**Frontend repo** - https://github.com/vivecodes/collab-plan-next
+**Backend repo** - https://github.com/vivecodes/collab-plan-node
 
 ## 🚀 Usage Guide
 
 🔹 1. **Register & Login**
 Create an account using username & password.
+
 🔹 2. **Create & Share Lists**
 Add new projects and share them with other registered users by username.
+
 🔹 3. **Add, Edit, and Delete Tasks**
 Assign tasks, mark them completed, and delete when necessary.
+
 🔹 4. **Real-Time Collaboration**
 Changes update instantly for all users sharing the list.
-
----
 
 ## 🛑 Disclaimer
 
