@@ -2,7 +2,7 @@ import { Delete02Icon } from "hugeicons-react";
 import { PencilEdit02Icon } from "hugeicons-react";
 import { CheckmarkCircle01Icon } from "hugeicons-react";
 import { RepeatIcon } from "hugeicons-react";
-import ItemCard from "./itemCard";
+import ItemCard from "./item-card";
 import { TaskItem } from "@/utils/types";
 
 type Props = {

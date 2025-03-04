@@ -37,23 +37,27 @@ const isTokenExpired = (token: string) => {
   return decodedToken.exp < currentTime; // Compare current time with expiration
 };
 
-// AuthProvider component to provide authentication context to the app
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState(""); // New state for username
+
   const router = useRouter();
 
-  const username = localStorage.getItem("username") || "";
-
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      const storedUsername = localStorage.getItem("username") || "";
 
-    if (token && !isTokenExpired(token)) {
-      setIsAuthenticated(true);
-    } else {
-      localStorage.removeItem("token");
-      localStorage.removeItem("username");
-      setIsAuthenticated(false);
-      router.push("/login");
+      if (token && !isTokenExpired(token)) {
+        setIsAuthenticated(true);
+        setUsername(storedUsername);
+      } else {
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+        setIsAuthenticated(false);
+        setUsername("");
+        router.push("/login");
+      }
     }
   }, [router]);
 

@@ -1,8 +1,8 @@
 "use client";
 import { useState, useContext } from "react";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { NotificationContext } from "@/context/notification-context";
+import api from "@/utils/api";
 
 const SignupPage = () => {
   const [username, setUsername] = useState("");
@@ -14,7 +14,7 @@ const SignupPage = () => {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3001/api/auth/signup", {
+      await api.post("/auth/signup", {
         username,
         password,
       });
@@ -27,7 +27,6 @@ const SignupPage = () => {
 
   return (
     <div>
-      <h1>Signup</h1>
       <form onSubmit={handleSignup}>
         <input
           type="text"

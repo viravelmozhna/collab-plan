@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
-import ItemCard from "@/components/itemCard";
+import ItemCard from "@/components/item-card";
 import Loader from "@/components/loader";
 import api from "@/utils/api";
 import { List } from "@/utils/types";
