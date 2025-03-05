@@ -146,6 +146,15 @@ const TaskPage = () => {
 
   const handleShareList = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (listOwner === shareWith) {
+      notification?.updateNotification(
+        "You cannot share the list with yourself",
+        "error"
+      );
+      return;
+    }
+
     try {
       await api.post(`/lists/${listId}/share`, {
         username: shareWith,
@@ -164,9 +173,9 @@ const TaskPage = () => {
         <Loader />
       ) : (
         <ul className="grid grid-cols-4 gap-12">
-          {tasks.map((task: TaskItem) => (
+          {tasks.map((task: TaskItem, index: number) => (
             <Task
-              key={`task_${task._id}`}
+              key={`task_${task._id}_${index}`}
               task={task}
               onEdit={handleEditTask}
               onDelete={handleDeleteTask}

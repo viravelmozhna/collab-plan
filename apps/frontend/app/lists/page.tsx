@@ -61,9 +61,9 @@ const ListsPage = () => {
         <Loader />
       ) : (
         <ul className="grid grid-cols-4 gap-12">
-          {lists.map((list: List) => (
+          {lists.map((list: List, index: number) => (
             <ItemCard
-              key={`list_${list._id}`}
+              key={`list_${list._id}_${index}`}
               id={list._id}
               classNames="flex h-100 p-12 cursor-pointer bg-white shadow-md"
               onClick={handleClickOnItem}
