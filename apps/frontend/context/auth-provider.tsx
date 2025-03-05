@@ -39,27 +39,28 @@ const isTokenExpired = (token: string) => {
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [username, setUsername] = useState(""); // New state for username
 
   const router = useRouter();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");
-      const storedUsername = localStorage.getItem("username") || "";
 
       if (token && !isTokenExpired(token)) {
         setIsAuthenticated(true);
-        setUsername(storedUsername);
       } else {
         localStorage.removeItem("token");
         localStorage.removeItem("username");
         setIsAuthenticated(false);
-        setUsername("");
         router.push("/login");
       }
     }
   }, [router]);
+
+  let username = "";
+  if (typeof window !== "undefined") {
+    username = localStorage.getItem("username") || "";
+  }
 
   return (
     <AuthContext.Provider
