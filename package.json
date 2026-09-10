@@ -1,0 +1,25 @@
+{
+  "name": "collab-to-do",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Collaborative to-do app — Express/Socket.IO backend and Next.js frontend",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n backend,frontend -c cyan,magenta \"npm:dev:backend\" \"npm:dev:frontend\"",
+    "dev:backend": "npm run dev --workspace apps/backend",
+    "dev:frontend": "npm run dev --workspace apps/frontend",
+    "build": "npm run build --workspace apps/frontend",
+    "start": "concurrently -n backend,frontend -c cyan,magenta \"npm:start:backend\" \"npm:start:frontend\"",
+    "start:backend": "npm run start --workspace apps/backend",
+    "start:frontend": "npm run start --workspace apps/frontend",
+    "lint": "npm run lint --workspace apps/frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
