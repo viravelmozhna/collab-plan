@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useState, useContext, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -10,6 +10,9 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
+
+// Reachable without a token, so visiting or refreshing them must not redirect.
+const PUBLIC_ROUTES = ["/login", "/signup"];
 
 const decodeToken = (token: string) => {
   try {
@@ -41,6 +44,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -52,10 +56,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         localStorage.removeItem("token");
         localStorage.removeItem("username");
         setIsAuthenticated(false);
-        router.push("/login");
+        if (!PUBLIC_ROUTES.includes(pathname)) {
+          router.push("/login");
+        }
       }
     }
-  }, [router]);
+  }, [router, pathname]);
 
   let username = "";
   if (typeof window !== "undefined") {
