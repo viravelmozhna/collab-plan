@@ -18,8 +18,8 @@
 - **Backend:** Node.js, Express.js, MongoDB, Mongoose, Socket.IO
 - **Authentication:** JWT (JSON Web Tokens)
 
-**Frontend repo** - https://github.com/vivecodes/collab-plan-next
-**Backend repo** - https://github.com/vivecodes/collab-plan-node
+**Frontend repo** - https://github.com/viravelmozhna/collab-plan-next
+**Backend repo** - https://github.com/viravelmozhna/collab-plan-node
 
 ## 🚀 Usage Guide
 

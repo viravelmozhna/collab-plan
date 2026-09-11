@@ -67,7 +67,10 @@ router.post("/:listId/share", authenticateToken, async (req, res) => {
       return res.status(404).json({ error: ErrorMessage.listNotFound });
     }
 
-    if (list.sharedWith.includes(user._id)) {
+    const isAlreadyShared = list.sharedWith.some(
+      (sharedId) => sharedId.toString() === user._id.toString()
+    );
+    if (isAlreadyShared) {
       return res.status(400).json({ error: ErrorMessage.listAlreadyShared });
     }
 
