@@ -1,0 +1,39 @@
+# Render Blueprint for the backend.
+#
+# rootDir is deliberately left at the repository root: this is an npm
+# workspaces monorepo with a single lockfile at the top, so pointing Render at
+# apps/backend would hide package-lock.json and the workspaces definition from
+# the install. The workspace is selected by the start command instead.
+#
+# buildFilter keeps a frontend-only commit from redeploying the backend.
+services:
+  - name: collab-plan-api
+    type: web
+    runtime: node
+    plan: free
+    # Pick the region closest to your Atlas cluster; every hop between the API
+    # and the database is paid on every request. Options include oregon,
+    # ohio, virginia, frankfurt and singapore.
+    region: frankfurt
+    branch: main
+    buildCommand: npm ci
+    startCommand: npm run start:backend
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - apps/backend/**
+        - package.json
+        - package-lock.json
+        - render.yaml
+    envVars:
+      # Set in the Render dashboard, never committed.
+      - key: DB_HOST
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      # The deployed frontend's origin. This is the CORS allowlist, so it has
+      # to be the exact origin, no trailing slash.
+      - key: FRONTEND_URL
+        sync: false
+      # PORT is injected by Render; server.js reads it and falls back to 3001.
