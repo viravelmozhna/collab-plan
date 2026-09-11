@@ -12,7 +12,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 // Reachable without a token, so visiting or refreshing them must not redirect.
-const PUBLIC_ROUTES = ["/login", "/signup"];
+const PUBLIC_ROUTES = ["/", "/login", "/signup"];
 
 const decodeToken = (token: string) => {
   try {
