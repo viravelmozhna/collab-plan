@@ -17,7 +17,10 @@ export const authenticateToken = (req, res, next) => {
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
-      return res.status(403).json({ message: ErrorMessage.tokenInvalid });
+      // 401, not 403: the credentials are bad, which is what tells the client
+      // to sign the user out. 403 is reserved for a valid user who lacks
+      // access to a specific resource.
+      return res.status(401).json({ message: ErrorMessage.tokenInvalid });
     }
     req.user = user;
     next();
