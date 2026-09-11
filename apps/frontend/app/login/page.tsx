@@ -4,10 +4,12 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth-provider";
 import { NotificationContext } from "@/context/notification-context";
 import api from "@/utils/api";
+import WakingUpNotice from "@/components/waking-up-notice";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { setIsAuthenticated } = useAuth();
   const router = useRouter();
@@ -15,6 +17,7 @@ const LoginPage = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
       const response = await api.post("/auth/login", { username, password });
       localStorage.setItem("token", response.data.token);
@@ -24,6 +27,7 @@ const LoginPage = () => {
     } catch (error) {
       notification?.updateNotification("Invalid credentials", "error");
       console.log(error);
+      setIsSubmitting(false);
     }
   };
 
@@ -44,7 +48,10 @@ const LoginPage = () => {
           placeholder="Password"
           required
         />
-        <button type="submit">Login</button>
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Logging in..." : "Login"}
+        </button>
+        <WakingUpNotice isActive={isSubmitting} />
       </form>
     </div>
   );
