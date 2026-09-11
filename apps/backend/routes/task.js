@@ -6,19 +6,36 @@ import { ErrorMessage, Message } from "../utils/constants.js";
 
 const router = express.Router();
 
+class ListAccessError extends Error {
+  constructor(status, message) {
+    super(message);
+    this.status = status;
+  }
+}
+
 const checkIfListExistAndAccessible = async (listId, userId) => {
   const list = await List.findOne({ _id: listId });
   if (!list) {
-    return res.status(404).json({ error: ErrorMessage.listNotFound });
+    throw new ListAccessError(404, ErrorMessage.listNotFound);
   }
 
+  // sharedWith holds ObjectIds, userId is a string from the token, so both
+  // sides have to be compared as strings.
   const hasAccess =
-    list.owner.toString() === userId || list.sharedWith.includes(userId);
+    list.owner.toString() === userId ||
+    list.sharedWith.some((sharedId) => sharedId.toString() === userId);
   if (!hasAccess) {
-    return res.status(403).json({ error: ErrorMessage.accessDeniedList });
+    throw new ListAccessError(403, ErrorMessage.accessDeniedList);
   }
 
   return list;
+};
+
+const handleRouteError = (res, error) => {
+  if (error instanceof ListAccessError) {
+    return res.status(error.status).json({ error: error.message });
+  }
+  return res.status(500).json({ error: error.message });
 };
 
 export default (io) => {
@@ -28,7 +45,7 @@ export default (io) => {
       const { listId } = req.params;
       const { id: userId } = req.user;
 
-      checkIfListExistAndAccessible(listId, userId);
+      await checkIfListExistAndAccessible(listId, userId);
 
       const populatedList = await List.findOne({ _id: listId })
         .populate("owner", "username")
@@ -42,7 +59,7 @@ export default (io) => {
 
       res.status(200).json(populatedList);
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      handleRouteError(res, error);
     }
   });
 
@@ -80,7 +97,7 @@ export default (io) => {
       io.to(listId).emit("taskCreated", createdTask);
       res.status(201).json(createdTask);
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      handleRouteError(res, error);
     }
   });
 
@@ -91,7 +108,7 @@ export default (io) => {
       const { listId, taskId } = req.params;
       const { id: userId } = req.user;
 
-      checkIfListExistAndAccessible(listId, userId);
+      await checkIfListExistAndAccessible(listId, userId);
 
       const task = await Task.findOneAndUpdate(
         { _id: taskId, list: listId },
@@ -107,7 +124,7 @@ export default (io) => {
       io.to(listId).emit("taskDescriptionUpdated", task);
       res.status(200).json(task);
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      handleRouteError(res, error);
     }
   });
 
@@ -121,7 +138,7 @@ export default (io) => {
         const { listId, taskId } = req.params;
         const { id: userId } = req.user;
 
-        checkIfListExistAndAccessible(listId, userId);
+        await checkIfListExistAndAccessible(listId, userId);
 
         const task = await Task.findOneAndUpdate(
           { _id: taskId, list: listId },
@@ -137,7 +154,7 @@ export default (io) => {
         io.to(listId).emit("taskCompletionUpdated", task);
         res.status(200).json(task);
       } catch (error) {
-        res.status(500).json({ error: error.message });
+        handleRouteError(res, error);
       }
     }
   );
@@ -164,7 +181,7 @@ export default (io) => {
       io.to(listId).emit("taskDeleted", taskId);
       res.status(200).json({ message: Message.taskIsDeleted });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      handleRouteError(res, error);
     }
   });
 
