@@ -63,5 +63,5 @@ npm run lint           # next lint
 
 This repo was formed from two repos, merged with their full history intact:
 
-- backend — `vivecodes/collab-plan-node` → `apps/backend`
-- frontend — `vivecodes/collab-plan-next` → `apps/frontend`
+- backend — `viravelmozhna/collab-plan-node` → `apps/backend`
+- frontend — `viravelmozhna/collab-plan-next` → `apps/frontend`

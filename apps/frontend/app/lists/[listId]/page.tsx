@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { useParams } from "next/navigation";
 import Task from "@/components/task";
 import { SocketContext } from "@/context/socket-provider";
@@ -19,10 +19,10 @@ const TaskPage = () => {
   const socket = useContext(SocketContext);
   const notification = useContext(NotificationContext);
 
-  useEffect(() => {
-    const fetchTasks = async () => {
+  const fetchTasks = useCallback(
+    async (showLoader = true) => {
       try {
-        setIsLoading(true);
+        if (showLoader) setIsLoading(true);
         const response = await api.get(`/tasks/${listId}`);
         setTasks(response.data.tasks);
         setListOwner(response.data.owner.username);
@@ -33,17 +33,31 @@ const TaskPage = () => {
         );
         console.log(error);
       } finally {
-        setIsLoading(false);
+        if (showLoader) setIsLoading(false);
       }
-    };
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [listId]
+  );
 
+  useEffect(() => {
     fetchTasks();
-  }, [listId]);
+  }, [fetchTasks]);
 
   useEffect(() => {
     if (!socket) return; // Wait for the socket to initialize
 
-    socket.emit("joinRoom", listId);
+    // The room is joined per connection, so it has to be re-joined after every
+    // reconnect (deploys, sleeping laptops, dropped networks). Tasks are
+    // refetched too, to pick up anything missed while disconnected.
+    const joinRoom = () => socket.emit("joinRoom", listId);
+    const handleReconnect = () => {
+      joinRoom();
+      fetchTasks(false);
+    };
+
+    joinRoom();
+    socket.on("connect", handleReconnect);
 
     socket.on("taskCreated", (newTask) => {
       setTasks((prev) => [...prev, newTask]);
@@ -67,12 +81,13 @@ const TaskPage = () => {
 
     return () => {
       socket.emit("leaveRoom", listId);
+      socket.off("connect", handleReconnect);
       socket.off("taskCreated");
       socket.off("taskDescriptionUpdated");
       socket.off("taskCompletionUpdated");
       socket.off("taskDeleted");
     };
-  }, [socket, listId]);
+  }, [socket, listId, fetchTasks]);
 
   const handleAddTask = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -13,14 +13,14 @@ router.post("/signup", async (req, res) => {
 
     const duplicatedUser = await User.findOne({ username });
     if (duplicatedUser) {
-      res.status(500).json({ error: ErrorMessage.dublicatedUser });
+      res.status(409).json({ error: ErrorMessage.dublicatedUser });
       return;
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({ username, password: hashedPassword });
     await user.save();
-    res.status(201).json(user);
+    res.status(201).json({ id: user.id, username: user.username });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
