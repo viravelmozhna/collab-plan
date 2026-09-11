@@ -5,6 +5,7 @@ import { useAuth } from "@/context/auth-provider";
 import { NotificationContext } from "@/context/notification-context";
 import api from "@/utils/api";
 import WakingUpNotice from "@/components/waking-up-notice";
+import TryDemoButton from "@/components/try-demo-button";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -53,6 +54,12 @@ const LoginPage = () => {
         </button>
         <WakingUpNotice isActive={isSubmitting} />
       </form>
+      <div className="max-w-[400px] mx-auto px-[2rem]">
+        <p className="text-greyish-2 text-sm mb-12 text-center">
+          or try it without an account
+        </p>
+        <TryDemoButton />
+      </div>
     </div>
   );
 };

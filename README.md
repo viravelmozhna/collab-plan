@@ -1,6 +1,20 @@
-# collab-to-do
+# Plan Together
 
-Monorepo for the collaborative to-do app.
+A real-time collaborative to-do list. Share a list with someone and you both see
+every change as it happens, without refreshing.
+
+**[Live demo](https://collab-plan.vercel.app)** — no sign-up needed, click "Try
+the demo" for a throwaway account with a sample list. It runs on free hosting, so
+the first request after a quiet spell takes up to a minute while the server wakes.
+
+![The landing page](docs/screenshots/landing.png)
+
+Open a list in two windows and watch tasks appear, change and get ticked off in
+both at once — that is Socket.IO pushing events to every client in the list's room.
+
+![A list with tasks](docs/screenshots/tasks.png)
+
+## Repo layout
 
 | Workspace | Path | Stack |
 | --- | --- | --- |
@@ -9,6 +23,17 @@ Monorepo for the collaborative to-do app.
 
 Managed with npm workspaces: one `npm install` at the root installs both apps and
 writes a single `package-lock.json`.
+
+## Hosting
+
+| Piece | Where |
+| --- | --- |
+| Frontend | Vercel, root directory `apps/frontend` |
+| Backend | Render, configured by [`render.yaml`](render.yaml) |
+| Database | MongoDB Atlas |
+
+The backend needs a long-lived process for Socket.IO, which is why it is not on
+Vercel alongside the frontend.
 
 ## Setup
 
