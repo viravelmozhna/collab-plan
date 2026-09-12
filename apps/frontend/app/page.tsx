@@ -1,9 +1,11 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 
 import { useAuth } from "@/context/auth-provider";
 import TryDemoButton from "@/components/try-demo-button";
+import { prewarmApi } from "@/utils/prewarm";
 
 const FEATURES = [
   "Create lists and share them with other users by username",
@@ -20,6 +22,12 @@ const STACK = [
 
 const HomePage = () => {
   const { isAuthenticated, username } = useAuth();
+
+  // Start waking the API now, so it overlaps with the visitor reading this
+  // page instead of with them waiting after clicking the demo button.
+  useEffect(() => {
+    prewarmApi();
+  }, []);
 
   return (
     <div className="max-w-2xl">
