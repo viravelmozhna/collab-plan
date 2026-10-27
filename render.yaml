@@ -6,6 +6,9 @@
 # the install. The workspace is selected by the start command instead.
 #
 # buildFilter keeps a frontend-only commit from redeploying the backend.
+#
+# Auto-deploy on commit needs the Render GitHub app installed with access to
+# this repo; without it, only manual deploys run.
 services:
   - name: collab-plan-api
     type: web
